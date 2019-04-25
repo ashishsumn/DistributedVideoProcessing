@@ -29,7 +29,6 @@ const port = config.get('Local.port');
 const local_path = config.get('Local.path');
 
 //setting up the database
-//const db = new sqlite3.Database('C:sqlite/comp512.db', sqlite3.OPEN_READWRITE, (err) => {
 const db = new sqlite3.Database(local_path+'/comp512.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
         console.error(err.message);
@@ -67,25 +66,46 @@ const storage_vid = multer.diskStorage({
     }
 });
 
+//Creating storage for image files
+const storage_pic = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, local_path+'/uploads/ImageUploads')
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.ip + '.jpeg')
+    }
+});
+
 //Upload functions
 const upload_vid = multer({ storage: storage_vid});
+const upload_pic = multer({ storage: storage_pic});
 
 // upload video file
 app.post('/uploadVidFile', upload_vid.single('videoFile'), (req, res) => {
-    activequeue.enqueue(req.ip);
-    currentframe.set(req.ip, 1);
-    var target = req.body.targetObject;
-    myEmitter.emit('vidUploaded',target);
-    res.sendFile(__dirname + '/results.html');
+    myEmitter.emit('videoUploaded');
+    res.sendFile(__dirname + '/uploadImages.html')
 });
 
-//Event called after video is uploaded
-myEmitter.on('vidUploaded', (target) => {
+
+//Event called after video uploaded
+myEmitter.on('videoUploaded', () => {
     console.log('video upload complete!');
-    console.log('Target: ', target);
+});
+
+// upload image file
+app.post('/uploadImgFile', upload_pic.single('imgFile'), (req, res) => {
+    activequeue.enqueue(req.ip);
+    currentframe.set(req.ip, 1);
+    myEmitter.emit('imgUploaded');
+    res.render('ObjDect1',{user: "http://"+local_ip+":3000/mainimg", title: req.ip, obj: object});
+});
+
+//Event called after image is uploaded
+myEmitter.on('imgUploaded', () => {
+    console.log('image upload complete!');
     var extract_ip = activequeue.dequeue()
     extract(extract_ip);
-    db.each('Update Jobs SET object = ? where IP = ?', [target,extract_ip], (err, row) => {
+    db.each('Update Jobs SET object = ? where IP = ?', ["ball",extract_ip], (err, row) => {
         if (err) {
             throw err;
         }
@@ -121,6 +141,22 @@ async function extract(extract_ip) {
         console.log(e);
     }
 }
+
+app.get('/mainimg', function(req, res){
+
+        res.sendFile(__dirname + '/uploads/ImageUploads/' + req.ip + '.jpeg');
+
+});
+
+app.get('/somepage', function(req, res){
+    deleteJobs.set(req.ip,1);
+    db.each('DELETE From Jobs Where IP = ?', [req.ip], (err, row) => {
+        if (err) {
+            throw err;
+        }
+    });
+    res.sendFile(__dirname + '/results.html');
+});
 
 //Index page
 app.get('/', function(req, res){
