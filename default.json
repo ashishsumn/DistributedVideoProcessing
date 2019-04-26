@@ -1,0 +1,8 @@
+{
+  "Local": {
+      "host": "192.168.1.62",
+      "port": 3000,
+      "path": "D:/Courses/COMP512_ProjWS5",
+      "fps": 30
+  }
+}
