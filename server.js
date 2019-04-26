@@ -36,9 +36,10 @@ var flag = 0;
 const local_ip = config.get('Local.host');
 const port = config.get('Local.port');
 const local_path = config.get('Local.path');
+const target_fps = config.get('Local.fps');
 
 //setting up the databases
-const db = new sqlite3.Database(local_path + '/comp512.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('C:sqlite/comp512.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -116,7 +117,7 @@ async function extract(extract_ip,target) {
         await extractFrames({
             input: local_path+'/uploads/VideoUploads/'+extract_ip+'.mp4',
             output: local_path+'/uploads/Frames/'+extract_ip+'/'+extract_ip+'-%d.jpg',
-            fps : 20,
+            fps : target_fps,
         })
         rmdir.sync(local_path+'/uploads/VideoUploads/'+ extract_ip + '.mp4');
         fs.readdir(local_path+'/uploads/Frames/'+extract_ip, (err, files) => {
