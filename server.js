@@ -226,7 +226,6 @@ app.get('/upload', function(req, res){
 //Redirected to this address once we find the object
 app.get('/Found', function(req, res){
     while(flag==0)setTimeout(function() {
-        console.log('Blah blah blah blah extra-blah');
     }, 300);
     db.each('Select S_IP ip, frame frme from Clients where C_IP=?', [req.ip], (err, row) => {
         if (err) {
@@ -260,7 +259,6 @@ app.get('/Found', function(req, res){
 //The upload client keeps hitting this IP until its result is announced
 app.get('/waiting', function(req, res){
     while(flag==0)setTimeout(function() {
-        console.log('Blah blah blah blah extra-blah');
     }, 300);
     var waiting_ip = req.ip;
     if(completedJobs.peek()==waiting_ip) {
@@ -289,7 +287,6 @@ app.get('/waiting', function(req, res){
 //Host the final frame that was found
 app.get('/final', function(req, res){
     while(flag==0)setTimeout(function() {
-        console.log('Blah blah blah blah extra-blah');
     }, 300);
     var waiting_ip = req.ip;
     db.each('Select frame frme from Results where IP=?', [waiting_ip], (err, row) => {
