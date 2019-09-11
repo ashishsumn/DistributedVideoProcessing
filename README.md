@@ -1,5 +1,5 @@
 # OS-Project
-Distributed Video Processing
+Distributed Video Processing Framework
 
 This code implements a object detection algorithm over a network of computers using any javascript enabled browser.
 
