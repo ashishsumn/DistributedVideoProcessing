@@ -1,4 +1,4 @@
-# Academic Project towards the completion of the COMP 512 cource.
+# Academic Project towards the completion of the COMP 512 course.
 
 Title: Distributed Video Processing Framework
 
