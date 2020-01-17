@@ -1,5 +1,6 @@
-# OS-Project
-Distributed Video Processing Framework
+# Academic Project towards the completion of the COMP 512 cource.
+
+Title: Distributed Video Processing Framework
 
 This code implements a object detection algorithm over a network of computers using any javascript enabled browser.
 
